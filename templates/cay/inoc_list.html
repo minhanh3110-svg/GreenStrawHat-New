@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Nhật ký cấy{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Nhật ký cấy</h3>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('caylog.productivity', from=dfrom, to=dto) }}">Xem năng suất</a>
+    <a class="btn btn-primary" href="{{ url_for('caylog.create') }}">+ Thêm dòng</a>
+  </div>
+</div>
+
+<form class="row g-2 mb-3">
+  <div class="col-auto">
+    <label class="form-label">Từ ngày</label>
+    <input type="date" class="form-control" name="from" value="{{ dfrom }}">
+  </div>
+  <div class="col-auto">
+    <label class="form-label">Đến ngày</label>
+    <input type="date" class="form-control" name="to" value="{{ dto }}">
+  </div>
+  <div class="col-auto align-self-end">
+    <button class="btn btn-outline-secondary">Lọc</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+<table class="table table-sm table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Thứ</th>
+      <th>Tuần cấy</th>
+      <th>Tháng cấy</th>
+      <th>Ngày</th>
+      <th>Người cấy (mã)</th>
+      <th>Box cấy</th>
+      <th>Tình trạng</th>
+      <th>Chu kỳ</th>
+      <th>Môi trường mô mẹ</th>
+      <th>Số túi mô mẹ</th>
+      <th>Số cụm/túi (mẹ)</th>
+      <th>Tổng cụm mô mẹ</th>
+      <th>Số túi mô con</th>
+      <th>Số cụm/túi (con)</th>
+      <th>Tổng cụm mô con</th>
+      <th>Giống (mã)</th>
+      <th>Tên giống</th>
+      <th>Lô nhận</th>
+      <th>Tổng giờ</th>
+      <th>Ghi chú</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    {% set thu = ["Hai","Ba","Tư","Năm","Sáu","Bảy","CN"][r.date.weekday()] %}
+    <tr>
+      <td>{{ thu }}</td>
+      <td>{{ r.week_iso }}</td>
+      <td>{{ "%02d"|format(r.month_num) }}</td>
+      <td>{{ r.date.strftime("%Y-%m-%d") }}</td>
+      <td>{{ r.operator_code }}</td>
+      <td>{{ r.box_code or "" }}</td>
+      <td>{{ "Sạch" if r.status=="CLEAN" else "Khuẩn" }}</td>
+      <td>{% if r.cycle=="NHAN" %}Nhân{% elif r.cycle=="GIAN" %}Giãn{% else %}Rễ{% endif %}</td>
+      <td>{{ r.mother_media or "" }}</td>
+      <td class="text-end">{{ r.mother_bag_count }}</td>
+      <td class="text-end">{{ r.clusters_per_bag }}</td>
+      <td class="text-end fw-semibold">{{ r.total_clusters_mother }}</td>
+      <td class="text-end">{{ r.child_bag_count }}</td>
+      <td class="text-end">{{ r.child_clusters_per_bag }}</td>
+      <td class="text-end fw-semibold">{{ r.total_clusters_child }}</td>
+      <td>{{ r.species_code }}</td>
+      <td>{{ r.species_label or "" }}</td>
+      <td>{{ r.received_lot or "" }}</td>
+      <td class="text-end">{{ "%.2f"|format(r.total_hours or 0) }}</td>
+      <td class="text-wrap" style="max-width:240px">{{ r.notes or "" }}</td>
+      <td class="text-end">
+        <form method="post" action="{{ url_for('caylog.delete', log_id=r.id) }}" onsubmit="return confirm('Xoá bản ghi?')">
+          <button class="btn btn-sm btn-outline-danger">Xoá</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

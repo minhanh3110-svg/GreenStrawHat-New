@@ -23,7 +23,6 @@ def create_app():
 
     @app.cli.command("init-db")
     def init_db_cmd():
-        """Create database tables."""
         with app.app_context():
             db.create_all()
         click.echo("✔ Database initialized.")
@@ -41,7 +40,6 @@ def create_app():
             db.session.add(u)
             db.session.commit()
             click.echo(f"✔ Created user: {username}")
-
     return app
 
 app = create_app()

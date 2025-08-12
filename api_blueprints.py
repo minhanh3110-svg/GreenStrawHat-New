@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 from io import BytesIO
 
-# ========================= AUTH =========================
+# AUTH
 auth_bp = Blueprint("auth_api", __name__, url_prefix="/api/auth")
 
 @auth_bp.post("/login")
@@ -33,7 +33,7 @@ def api_me():
         return jsonify({"authenticated": True, "user": {"id": u.id, "username": u.username, "role": u.role}})
     return jsonify({"authenticated": False})
 
-# ========================= SPECIES =========================
+# SPECIES
 species_bp = Blueprint("species_api", __name__, url_prefix="/api/species")
 
 @species_bp.get("")
@@ -50,25 +50,7 @@ def create_species():
     db.session.commit()
     return jsonify({"id": s.id}), 201
 
-@species_bp.put("/<int:sid>")
-@login_required
-def update_species(sid):
-    s = Species.query.get_or_404(sid)
-    d = request.get_json(force=True)
-    for k in ["code", "name_vi", "name_en", "cultivar", "notes"]:
-        if k in d: setattr(s, k, d[k])
-    db.session.commit()
-    return jsonify({"ok": True})
-
-@species_bp.delete("/<int:sid>")
-@login_required
-def delete_species(sid):
-    s = Species.query.get_or_404(sid)
-    db.session.delete(s)
-    db.session.commit()
-    return jsonify({"ok": True})
-
-# ========================= MEDIA =========================
+# MEDIA
 media_bp = Blueprint("media_api", __name__, url_prefix="/api/media")
 
 @media_bp.get("")
@@ -85,25 +67,7 @@ def create_media():
     db.session.commit()
     return jsonify({"id": m.id}), 201
 
-@media_bp.put("/<int:mid>")
-@login_required
-def update_media(mid):
-    m = MediaFormula.query.get_or_404(mid)
-    d = request.get_json(force=True)
-    for k in ["code","name","version","composition_json","ph","ster_time_min","is_active"]:
-        if k in d: setattr(m, k, d[k])
-    db.session.commit()
-    return jsonify({"ok": True})
-
-@media_bp.delete("/<int:mid>")
-@login_required
-def delete_media(mid):
-    m = MediaFormula.query.get_or_404(mid)
-    db.session.delete(m)
-    db.session.commit()
-    return jsonify({"ok": True})
-
-# ========================= BATCHES =========================
+# BATCHES
 batches_bp = Blueprint("batches_api", __name__, url_prefix="/api/batches")
 
 @batches_bp.get("")
@@ -120,11 +84,6 @@ def create_batch():
     db.session.commit()
     return jsonify({"id": b.id, "code": b.code}), 201
 
-@batches_bp.get("/<int:bid>")
-def get_batch(bid):
-    b = Batch.query.get_or_404(bid)
-    return jsonify({"id": b.id, "code": b.code, "species_id": b.species_id, "stage": b.stage, "status": b.status, "current_room_id": b.current_room_id})
-
 @batches_bp.post("/<int:bid>/ops")
 @login_required
 def create_op(bid):
@@ -134,7 +93,7 @@ def create_op(bid):
     db.session.commit()
     return jsonify({"id": op.id}), 201
 
-# ========================= LAYOUT =========================
+# LAYOUT
 layout_bp = Blueprint("layout_api", __name__, url_prefix="/api/layout")
 
 @layout_bp.get("/rooms")
@@ -160,7 +119,7 @@ def list_trays():
     rows = q.order_by(Tray.id).all()
     return jsonify([{ "id": t.id, "shelf_id": t.shelf_id, "code": t.code, "row": t.row, "col": t.col, "capacity": t.capacity, "status": t.status } for t in rows])
 
-# ========================= INVENTORY =========================
+# INVENTORY
 inventory_bp = Blueprint("inventory_api", __name__, url_prefix="/api/inventory")
 
 @inventory_bp.get("/items")
@@ -186,7 +145,7 @@ def create_tx():
     db.session.commit()
     return jsonify({"id": tx.id}), 201
 
-# ========================= QC =========================
+# QC
 qc_bp = Blueprint("qc_api", __name__, url_prefix="/api/qc")
 
 @qc_bp.post("/checks")
@@ -208,7 +167,7 @@ def list_qc():
     rows = q.order_by(QCCheck.id.desc()).all()
     return jsonify([{ "id": x.id, "entity_type": x.entity_type, "entity_id": x.entity_id, "check_point": x.check_point, "result": x.result, "value": x.value, "unit": x.unit, "date": x.date.isoformat() } for x in rows])
 
-# ========================= REPORTS =========================
+# REPORTS
 reports_bp = Blueprint("reports_api", __name__, url_prefix="/api/reports")
 
 @reports_bp.get("")

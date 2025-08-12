@@ -10,13 +10,7 @@ services:
         generateValue: true
       - key: SQLALCHEMY_DATABASE_URI
         value: sqlite:///database.db
-    autoDeploy: true
     healthCheckPath: /auth/login
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: DENY
 databases:
   - name: labapp-postgres
     plan: free
-    ipAllowList: []

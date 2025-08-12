@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Thêm nhật ký cấy{% endblock %}
+{% block content %}
+<h3 class="mb-3">Thêm nhật ký cấy</h3>
+<form method="post" class="row g-3">
+  <div class="col-md-3">
+    <label class="form-label">Ngày</label>
+    <input type="date" name="date" class="form-control" value="{{ today }}" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Người cấy (mã)</label>
+    <input name="operator_code" class="form-control" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Box cấy</label>
+    <input name="box_code" class="form-control">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Tình trạng</label>
+    <select name="status" class="form-select">
+      <option value="CLEAN">Sạch</option>
+      <option value="CONTAM">Khuẩn</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Chu kỳ</label>
+    <select name="cycle" class="form-select" required>
+      <option value="NHAN">Nhân</option>
+      <option value="GIAN">Giãn</option>
+      <option value="RE">Rễ</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Môi trường mô mẹ</label>
+    <input name="mother_media" class="form-control">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Số túi mô mẹ</label>
+    <input type="number" name="mother_bag_count" class="form-control" value="0" min="0">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Số cụm/túi (mẹ)</label>
+    <input type="number" name="clusters_per_bag" class="form-control" value="0" min="0">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Số túi mô con</label>
+    <input type="number" name="child_bag_count" class="form-control" value="0" min="0">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Số cụm/túi (con)</label>
+    <input type="number" name="child_clusters_per_bag" class="form-control" value="0" min="0">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Giống (mã)</label>
+    <input name="species_code" class="form-control" placeholder="VD: CNXHN" required>
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Tên giống (tùy chọn)</label>
+    <input name="species_label" class="form-control" placeholder="Cam nhụy xanh Hà Nội">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Lô nhận</label>
+    <input name="received_lot" class="form-control">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Tổng giờ</label>
+    <input type="number" step="0.1" name="total_hours" class="form-control" value="0">
+  </div>
+
+  <div class="col-12">
+    <label class="form-label">Ghi chú</label>
+    <textarea name="notes" rows="3" class="form-control"></textarea>
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('caylog.index') }}">Huỷ</a>
+  </div>
+</form>
+{% endblock %}

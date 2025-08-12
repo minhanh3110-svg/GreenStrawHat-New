@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Năng suất theo ngày & chu kỳ{% endblock %}
+{% block content %}
+<h3 class="mb-3">Năng suất theo ngày & chu kỳ</h3>
+<form class="row g-2 mb-3">
+  <div class="col-auto">
+    <label class="form-label">Từ ngày</label>
+    <input type="date" class="form-control" name="from" value="{{ dfrom }}">
+  </div>
+  <div class="col-auto">
+    <label class="form-label">Đến ngày</label>
+    <input type="date" class="form-control" name="to" value="{{ dto }}">
+  </div>
+  <div class="col-auto align-self-end">
+    <button class="btn btn-outline-secondary">Lọc</button>
+  </div>
+</form>
+
+<table class="table table-sm table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Ngày</th>
+      <th>Chu kỳ</th>
+      <th>Tổng cụm mô con</th>
+      <th>Tổng giờ</th>
+      <th>Năng suất (cụm/giờ)</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in data %}
+    <tr>
+      <td>{{ r.ngay.strftime("%Y-%m-%d") }}</td>
+      <td>{% if r.chu_ky=="NHAN" %}Nhân{% elif r.chu_ky=="GIAN" %}Giãn{% else %}Rễ{% endif %}</td>
+      <td class="text-end">{{ r.tong_cum_con }}</td>
+      <td class="text-end">{{ r.tong_gio }}</td>
+      <td class="text-end">{{ r.nang_suat_cum_gio if r.nang_suat_cum_gio is not none else "" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
