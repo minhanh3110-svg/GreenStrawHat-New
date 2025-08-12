@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: labapp
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SQLALCHEMY_DATABASE_URI
+        value: sqlite:///database.db
+    autoDeploy: true
+    healthCheckPath: /auth/login
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+databases:
+  - name: labapp-postgres
+    plan: free
+    ipAllowList: []
