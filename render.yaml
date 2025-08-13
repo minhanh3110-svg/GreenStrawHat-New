@@ -1,8 +1,7 @@
 services:
   - type: web
-    name: labapp
+    name: labapp-3rooms
     env: python
-    plan: free
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
@@ -11,6 +10,3 @@ services:
       - key: SQLALCHEMY_DATABASE_URI
         value: sqlite:///database.db
     healthCheckPath: /auth/login
-databases:
-  - name: labapp-postgres
-    plan: free

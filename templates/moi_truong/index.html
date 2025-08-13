@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Nhật ký phòng môi trường{% endblock %}
+{% block content %}
+<h3 class="mb-3">Nhật ký phòng môi trường</h3>
+<form method="post" class="row g-3">
+  <div class="col-md-3"><label class="form-label">Ngày</label><input type="date" name="ngay" class="form-control" required></div>
+  <div class="col-md-2"><label class="form-label">Thứ</label><input name="thu" class="form-control"></div>
+  <div class="col-md-2"><label class="form-label">Tuần</label><input name="tuan" type="number" class="form-control" min="1" max="53"></div>
+  <div class="col-md-2"><label class="form-label">Tháng</label><input name="thang" type="number" class="form-control" min="1" max="12"></div>
+  <div class="col-md-3"><label class="form-label">Người</label><input name="nguoi" class="form-control" required></div>
+  <div class="col-md-2"><label class="form-label">Mã người</label><input name="ma_nguoi" class="form-control"></div>
+  <div class="col-md-4"><label class="form-label">Nội dung</label><input name="noi_dung" class="form-control" placeholder="Chế môi trường/ Hấp khử..."></div>
+  <div class="col-md-2"><label class="form-label">Số mẫu</label><input name="so_mau" type="number" class="form-control" value="0"></div>
+  <div class="col-md-2"><label class="form-label">Tổng giờ</label><input name="tong_gio" type="number" step="0.1" class="form-control" value="0"></div>
+  <div class="col-12"><label class="form-label">Ghi chú</label><textarea name="ghi_chu" rows="2" class="form-control"></textarea></div>
+  <div class="col-12"><button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('moitruong_export') }}">Xuất Excel</a></div>
+</form>
+
+<hr>
+<div class="table-responsive">
+<table class="table table-sm table-bordered align-middle mt-3">
+  <thead class="table-light"><tr>
+    <th>Ngày</th><th>Người</th><th>Nội dung</th><th>Số mẫu</th><th>Tổng giờ</th><th>Ghi chú</th>
+  </tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.ngay }}</td><td>{{ r.nguoi }}</td><td>{{ r.noi_dung }}</td>
+      <td class="text-end">{{ r.so_mau }}</td><td class="text-end">{{ "%.2f"|format(r.tong_gio) }}</td><td>{{ r.ghi_chu }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

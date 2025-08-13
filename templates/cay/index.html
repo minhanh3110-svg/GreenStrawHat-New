@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Nhật ký phòng cấy{% endblock %}
+{% block content %}
+<h3 class="mb-3">Nhật ký phòng cấy</h3>
+<form method="post" class="row g-3">
+  <div class="col-md-3"><label class="form-label">Ngày</label><input type="date" name="ngay" class="form-control" value="{{ now().date() if false else '' }}" required></div>
+  <div class="col-md-2"><label class="form-label">Thứ</label><input name="thu" class="form-control" placeholder="Hai/Ba/.../CN"></div>
+  <div class="col-md-2"><label class="form-label">Tuần</label><input name="tuan" type="number" class="form-control" min="1" max="53"></div>
+  <div class="col-md-2"><label class="form-label">Tháng</label><input name="thang" type="number" class="form-control" min="1" max="12"></div>
+  <div class="col-md-3"><label class="form-label">Người cấy</label><input name="nguoi" class="form-control" required></div>
+  <div class="col-md-2"><label class="form-label">Mã người</label><input name="ma_nguoi" class="form-control"></div>
+  <div class="col-md-2"><label class="form-label">Box</label><input name="box" class="form-control"></div>
+  <div class="col-md-2"><label class="form-label">Tình trạng</label>
+    <select name="tinh_trang" class="form-select"><option>Sạch</option><option>Khuẩn</option></select></div>
+  <div class="col-md-2"><label class="form-label">Chu kỳ</label>
+    <select name="chu_ky" class="form-select"><option>Nhân</option><option>Giãn</option><option>Rễ</option></select></div>
+  <div class="col-md-4"><label class="form-label">Môi trường mô mẹ</label><input name="moi_truong_me" class="form-control"></div>
+
+  <div class="col-md-2"><label class="form-label">Số túi mẹ</label><input id="me_tui" name="so_tui_me" type="number" class="form-control" value="0" min="0"></div>
+  <div class="col-md-2"><label class="form-label">Cụm/túi mẹ</label><input id="me_cum" name="so_cum_tui_me" type="number" class="form-control" value="0" min="0"></div>
+  <div class="col-md-2"><label class="form-label">Tổng cụm mẹ</label><input id="me_tong" name="tong_cum_me" class="form-control" readonly></div>
+
+  <div class="col-md-2"><label class="form-label">Số túi con</label><input id="con_tui" name="so_tui_con" type="number" class="form-control" value="0" min="0"></div>
+  <div class="col-md-2"><label class="form-label">Cụm/túi con</label><input id="con_cum" name="so_cum_tui_con" type="number" class="form-control" value="0" min="0"></div>
+  <div class="col-md-2"><label class="form-label">Tổng cụm con</label><input id="con_tong" name="tong_cum_con" class="form-control" readonly></div>
+
+  <div class="col-md-3"><label class="form-label">Giống</label><input name="giong" class="form-control"></div>
+  <div class="col-md-3"><label class="form-label">Lô nhận</label><input name="lo_nhan" class="form-control"></div>
+  <div class="col-md-2"><label class="form-label">Tổng giờ</label><input id="gio" name="tong_gio" type="number" step="0.1" class="form-control" value="0"></div>
+  <div class="col-md-2"><label class="form-label">Năng suất</label><input id="nang" name="nang_suat" class="form-control" readonly></div>
+
+  <div class="col-12"><button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('cay_export') }}">Xuất Excel</a></div>
+</form>
+
+<hr>
+<div class="table-responsive">
+<table class="table table-sm table-bordered align-middle mt-3">
+  <thead class="table-light"><tr>
+    <th>Ngày</th><th>Người</th><th>Box</th><th>Tình trạng</th><th>Chu kỳ</th>
+    <th>Số túi mẹ</th><th>Cụm/túi mẹ</th><th>Tổng cụm mẹ</th>
+    <th>Số túi con</th><th>Cụm/túi con</th><th>Tổng cụm con</th>
+    <th>Tổng giờ</th><th>Năng suất</th>
+  </tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.ngay }}</td><td>{{ r.nguoi }}</td><td>{{ r.box }}</td><td>{{ r.tinh_trang }}</td><td>{{ r.chu_ky }}</td>
+      <td class="text-end">{{ r.so_tui_me }}</td><td class="text-end">{{ r.so_cum_tui_me }}</td><td class="text-end">{{ r.tong_cum_me }}</td>
+      <td class="text-end">{{ r.so_tui_con }}</td><td class="text-end">{{ r.so_cum_tui_con }}</td><td class="text-end">{{ r.tong_cum_con }}</td>
+      <td class="text-end">{{ "%.2f"|format(r.tong_gio) }}</td><td class="text-end">{{ "%.2f"|format(r.nang_suat) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script>
+function recalc(){
+  const me_tui = parseInt(document.getElementById('me_tui').value||0);
+  const me_cum = parseInt(document.getElementById('me_cum').value||0);
+  const con_tui = parseInt(document.getElementById('con_tui').value||0);
+  const con_cum = parseInt(document.getElementById('con_cum').value||0);
+  const gio = parseFloat(document.getElementById('gio').value||0);
+  document.getElementById('me_tong').value = me_tui * me_cum;
+  document.getElementById('con_tong').value = con_tui * con_cum;
+  document.getElementById('nang').value = (gio>0 ? (me_tui*me_cum)/gio : 0).toFixed(2);
+}
+['me_tui','me_cum','con_tui','con_cum','gio'].forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener('input', recalc);
+});
+recalc();
+</script>
+{% endblock %}

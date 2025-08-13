@@ -1,26 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - LabApp{% endblock %}
+{% block title %}Trang chính{% endblock %}
 {% block content %}
 <div class="row g-3">
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">Chào, {{ user.username }} 👋</h5>
-        <p class="mb-0 text-muted">Bắt đầu với mục Nhật ký cấy hoặc gọi API ở menu trên.</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">Liên kết nhanh</h5>
-        <ul>
-          <li><a href="/cay/nhat-ky-cay">Nhật ký cấy</a></li>
-          <li><a href="/api/species">/api/species</a></li>
-          <li><a href="/api/batches">/api/batches</a></li>
-        </ul>
-      </div>
-    </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm"><div class="card-body">
+      <h5 class="card-title">Bắt đầu</h5>
+      <p>Chọn mục trên thanh menu để nhập nhật ký theo từng phòng.</p>
+      <ul>
+        {% if current_user.role in ['admin','cay'] %}<li><a href="{{ url_for('cay_page') }}">Nhật ký phòng cấy</a></li>{% endif %}
+        {% if current_user.role in ['admin','sang'] %}<li><a href="{{ url_for('sang_page') }}">Nhật ký phòng sáng</a></li>{% endif %}
+        {% if current_user.role in ['admin','moitruong'] %}<li><a href="{{ url_for('moitruong_page') }}">Nhật ký phòng môi trường</a></li>{% endif %}
+      </ul>
+    </div></div>
   </div>
 </div>
 {% endblock %}
